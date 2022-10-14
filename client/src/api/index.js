@@ -25,10 +25,18 @@ export const getAllPlaylists = () => api.get(`/playlists`)
 export const getPlaylistPairs = () => api.get('playlistpairs')
 export const getPlaylistById = (id) => api.get(`/playlist/${id}`)
 
+export const createPlayList = () =>
+  api.post("/playlist", {
+    name: "Untitled",
+    songs: [],
+  });
+
 const apis = {
     getAllPlaylists,
     getPlaylistPairs,
     getPlaylistById,
+    createPlayList,
+
 }
 
 export default apis

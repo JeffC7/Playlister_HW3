@@ -204,6 +204,14 @@ export const useGlobalStore = () => {
         });
     }
 
+    store.createNewList = function () {
+        async function asyncCreateNewList() {
+            await api.createPlayList();
+            store.loadIdNamePairs();
+        }
+        asyncCreateNewList();
+    }
+
     // THIS GIVES OUR STORE AND ITS REDUCER TO ANY COMPONENT THAT NEEDS IT
     return { store, storeReducer };
 }
