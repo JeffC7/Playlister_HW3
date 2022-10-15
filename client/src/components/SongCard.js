@@ -4,15 +4,21 @@ import { GlobalStoreContext } from '../store'
 function SongCard(props) {
     const { store } = useContext(GlobalStoreContext);
 
-    const { song, index, setCurrentSong, setSongIndex } = props;
+    const { song, index, setCurrentSong, setOldSong, setSongIndex, setIndexDelete, setShowDelete} = props;
     let cardClass = "list-card unselected-list-card";
 
     const handleDoubleClick = (ondblclick) => {
         ondblclick.preventDefault();
-        setCurrentSong(() => song);
+        setCurrentSong(song);
+        setOldSong(song);
         setSongIndex(index);
-        store.showEditSongModal();
     }
+
+    const onDeleteClick = (event) => {
+        setCurrentSong(song);
+        setIndexDelete(index);
+        setShowDelete(true);
+    } 
     
     return (
         <div
@@ -33,6 +39,8 @@ function SongCard(props) {
                 id={"remove-song-" + index}
                 className="list-card-button"
                 value={"\u2715"}
+                onClick={onDeleteClick}
+                
             />
         </div>
     );

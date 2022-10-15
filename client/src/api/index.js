@@ -28,15 +28,26 @@ export const deletePlaylistById = (id) => api.delete(`/deletePlaylist/${id}`)
 
 export const createSong = (id) => api.post(`/createSong/${id}`)
 export const removeSong = (id) => api.delete(`/removeSong/${id}`)
-export const editSong = (id, index, title, artist, youTubeId) => 
-  api.post(`/editSong/${id}/${index}`,
-    {
-      title: title,
-      artist: artist,
-      youTubeId: youTubeId
+export const editSong = (id, index, song) => 
+  api.post(`/editSong/${id}/${index}`, 
+    {   
+      title: song.title,
+      artist: song.artist,
+      youTubeId: song.youTubeId
     }
   )
 
+export const deleteSong = (id, index) => api.delete(`/deleteSong/${id}/${index}`)
+
+export const addDeleteSong = (id, index, song) => 
+  api.post(`/addDeleteSong/${id}/${index}`, 
+    {   
+      title: song.title,
+      artist: song.artist,
+      youTubeId: song.youTubeId
+    }
+  )
+  
 export const createPlayList = () =>
   api.post("/playlist", {
     name: "Untitled",
@@ -51,7 +62,9 @@ const apis = {
     deletePlaylistById,
     createSong,
     removeSong,
-
+    editSong,
+    deleteSong,
+    addDeleteSong,
 }
 
 export default apis

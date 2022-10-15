@@ -2,6 +2,8 @@ import { createContext, useState } from 'react'
 import jsTPS from '../common/jsTPS'
 import api from '../api'
 import AddSong_Transaction from '../transactions/AddSong_Transaction.js';
+import EditSong_Transaction from '../transactions/EditSong_Transaction.js';
+import DeleteSong_Transaction from '../transactions/DeleteSong_Transaction.js';
 
 export const GlobalStoreContext = createContext({});
 /*
@@ -274,10 +276,64 @@ export const useGlobalStore = () => {
         asyncRemoveSong(store.currentList._id);
     } 
 
-    store.showEditSongModal = function () {
-        let modal = document.getElementById("edit-song-modal");
-        modal.classList.add("is-visible");
+
+    store.addEditSongTransaction = (song, oldSong, index) => {
+        let transaction = new EditSong_Transaction(store, oldSong, song, index);
+        tps.addTransaction(transaction);
     }
+
+    store.editSong = function (song, index) {
+        async function asyncEditSong(id, index, song) {
+            let response = await api.editSong(id, index, song);
+            if (response.data.success) { 
+                let playlist = response.data.playlist;
+                storeReducer({
+                    type: GlobalStoreActionType.SET_CURRENT_LIST,
+                    payload: playlist
+                });
+                store.history.push("/playlist/" + playlist._id);
+            }
+        }
+        asyncEditSong(store.currentList._id, index, song);
+    }
+
+    store.addDeleteSongTransaction = (song, index) => {
+        let transaction = new DeleteSong_Transaction(store, song, index);
+        tps.addTransaction(transaction);
+    }
+
+    store.deleteSong = function (index) {
+        async function asyncDeleteSong(id, index) {
+            console.log("stored" + index);
+            let response = await api.deleteSong(id, index);
+            if (response.data.success) { 
+                let playlist = response.data.playlist;
+                storeReducer({
+                    type: GlobalStoreActionType.SET_CURRENT_LIST,
+                    payload: playlist
+                });
+                store.history.push("/playlist/" + playlist._id);
+            }
+        }
+        asyncDeleteSong(store.currentList._id, index);
+    }
+
+    store.addDeleteSong = function (index, song) {
+        async function asyncAddDeleteSong(id, index, song) {
+            console.log("storea" + index);
+            let response = await api.addDeleteSong(id, index, song);
+            if (response.data.success) { 
+                let playlist = response.data.playlist;
+                storeReducer({
+                    type: GlobalStoreActionType.SET_CURRENT_LIST,
+                    payload: playlist
+                });
+                store.history.push("/playlist/" + playlist._id);
+            }
+        }
+        asyncAddDeleteSong(store.currentList._id, index, song);
+    }
+
 
     // THIS GIVES OUR STORE AND ITS REDUCER TO ANY COMPONENT THAT NEEDS IT
     return { store, storeReducer };

@@ -149,7 +149,7 @@ removeSong = async (req, res) => {
 
 editSong = async (req, res) => {
     const body = req.body;
-    console.log("editSong body: " + JSON.stringify(body));
+    // console.log("editSong body: " + JSON.stringify(body));
     await Playlist.findOne({ _id: req.params.id }, (err, list) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
@@ -185,6 +185,69 @@ editSong = async (req, res) => {
     }).catch(err => console.log(err))
 }
 
+deleteSong = async (req, res) => {
+    await Playlist.findOne({ _id: req.params.id }, (err, list) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+        let deletedSong = list.songs.splice(req.params.index, 1)[0];
+        list
+            .save()
+            .then(() => {
+                return res.status(201).json({
+                    success: true,
+                    playlist: list,
+                    song: deletedSong,
+                    message: 'Song Deleted!',
+                })
+            })
+            .catch(error => {
+                return res.status(400).json({
+                    error,
+                    message: 'Song Not Deleted!',
+                })
+            })
+    }).catch(err => console.log(err))
+}
+
+addDeleteSong = async (req, res) => {
+    const body = req.body;
+    console.log("addDeleteSong body: " + JSON.stringify(body));
+    await Playlist.findOne({ _id: req.params.id }, (err, list) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+
+        if (!body) {
+            return res.status(400).json({
+                success: false,
+                error: 'You must provide a deleted song',
+            })
+        }
+        const index = req.params.index;
+
+        let deletedSong = {title: body.title, artist: body.artist, youTubeId: body.youTubeId};
+
+        list.songs.splice(index, 0, deletedSong);
+
+        list
+            .save()
+            .then(() => {
+                return res.status(201).json({
+                    success: true,
+                    playlist: list,
+                    message: 'Deleted Song Added!',
+                })
+            })
+            .catch(error => {
+                return res.status(400).json({
+                    error,
+                    message: 'Deleted Song Not Added!',
+                })
+            })
+    }).catch(err => console.log(err))
+}
+
 module.exports = {
     createPlaylist,
     getPlaylists,
@@ -194,5 +257,6 @@ module.exports = {
     createSong,
     removeSong,
     editSong,
-
+    deleteSong,
+    addDeleteSong
 }
