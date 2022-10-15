@@ -1,6 +1,8 @@
 import { createContext, useState } from 'react'
 import jsTPS from '../common/jsTPS'
 import api from '../api'
+import AddSong_Transaction from '../transactions/AddSong_Transaction.js';
+
 export const GlobalStoreContext = createContext({});
 /*
     This is our global data store. Note that it uses the Flux design pattern,
@@ -235,6 +237,46 @@ export const useGlobalStore = () => {
             }
         }
         asyncDeletePlaylist(id);
+    }
+
+    store.addSongTransaction = () => {
+        let transaction = new AddSong_Transaction(store);
+        tps.addTransaction(transaction);
+    }
+
+    store.addSong = function () {
+        async function asyncCreateSong(id) {
+            let response = await api.createSong(id);
+            if (response.data.success) { 
+                let playlist = response.data.playlist;
+                storeReducer({
+                    type: GlobalStoreActionType.SET_CURRENT_LIST,
+                    payload: playlist
+                });
+                store.history.push("/playlist/" + playlist._id);
+            }
+        }
+        asyncCreateSong(store.currentList._id);
+    }
+
+    store.removeSong = function () {
+        async function asyncRemoveSong(id) {
+            let response = await api.removeSong(id);
+            if (response.data.success) { 
+                let playlist = response.data.playlist;
+                storeReducer({
+                    type: GlobalStoreActionType.SET_CURRENT_LIST,
+                    payload: playlist
+                });
+                store.history.push("/playlist/" + playlist._id);
+            }
+        }
+        asyncRemoveSong(store.currentList._id);
+    } 
+
+    store.showEditSongModal = function () {
+        let modal = document.getElementById("edit-song-modal");
+        modal.classList.add("is-visible");
     }
 
     // THIS GIVES OUR STORE AND ITS REDUCER TO ANY COMPONENT THAT NEEDS IT

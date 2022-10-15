@@ -4,13 +4,22 @@ import { GlobalStoreContext } from '../store'
 function SongCard(props) {
     const { store } = useContext(GlobalStoreContext);
 
-    const { song, index } = props;
+    const { song, index, setCurrentSong, setSongIndex } = props;
     let cardClass = "list-card unselected-list-card";
+
+    const handleDoubleClick = (ondblclick) => {
+        ondblclick.preventDefault();
+        setCurrentSong(() => song);
+        setSongIndex(index);
+        store.showEditSongModal();
+    }
+    
     return (
         <div
             key={index}
             id={'song-' + index + '-card'}
             className={cardClass}
+            onDoubleClick={handleDoubleClick}
         >
             {index + 1}.
             <a

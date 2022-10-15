@@ -109,7 +109,7 @@ createSong = async (req, res) => {
             .then(() => {
                 return res.status(201).json({
                     success: true,
-                    list: list,
+                    playlist: list,
                     message: 'Song Created!',
                 })
             })
@@ -122,6 +122,69 @@ createSong = async (req, res) => {
     }).catch(err => console.log(err))
 }
 
+removeSong = async (req, res) => {
+    await Playlist.findOne({ _id: req.params.id }, (err, list) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+        let removedSong = list.songs.pop();
+        list
+            .save()
+            .then(() => {
+                return res.status(201).json({
+                    success: true,
+                    playlist: list,
+                    song: removedSong,
+                    message: 'Song Removed!',
+                })
+            })
+            .catch(error => {
+                return res.status(400).json({
+                    error,
+                    message: 'Song Not Removed!',
+                })
+            })
+    }).catch(err => console.log(err))
+}
+
+editSong = async (req, res) => {
+    const body = req.body;
+    console.log("editSong body: " + JSON.stringify(body));
+    await Playlist.findOne({ _id: req.params.id }, (err, list) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+
+        if (!body) {
+            return res.status(400).json({
+                success: false,
+                error: 'You must provide a song',
+            })
+        }
+        const index = req.params.index;
+
+        let newSong = {title: body.title, artist: body.artist, youTubeId: body.youTubeId};
+
+        list.songs[index] = newSong;
+
+        list
+            .save()
+            .then(() => {
+                return res.status(201).json({
+                    success: true,
+                    playlist: list,
+                    message: 'Song Edited!',
+                })
+            })
+            .catch(error => {
+                return res.status(400).json({
+                    error,
+                    message: 'Song Not Edited!',
+                })
+            })
+    }).catch(err => console.log(err))
+}
+
 module.exports = {
     createPlaylist,
     getPlaylists,
@@ -129,4 +192,7 @@ module.exports = {
     getPlaylistById,
     deletePlaylistById,
     createSong,
+    removeSong,
+    editSong,
+
 }
