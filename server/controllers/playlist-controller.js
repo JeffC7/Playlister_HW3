@@ -87,9 +87,46 @@ getPlaylistPairs = async (req, res) => {
     }).catch(err => console.log(err))
 }
 
+deletePlaylistById = async (req, res) => {
+    await Playlist.deleteOne({ _id: req.params.id }, (err, list) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+
+        return res.status(200).json({ success: true})
+    }).catch(err => console.log(err))
+}
+
+createSong = async (req, res) => {
+    await Playlist.findOne({ _id: req.params.id }, (err, list) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+        let rickRoll = {title: "Untitled", artist: "Unknown", youTubeId: "dQw4w9WgXcQ"};
+        list.songs.push(rickRoll)
+        list
+            .save()
+            .then(() => {
+                return res.status(201).json({
+                    success: true,
+                    list: list,
+                    message: 'Song Created!',
+                })
+            })
+            .catch(error => {
+                return res.status(400).json({
+                    error,
+                    message: 'Song Not Created!',
+                })
+            })
+    }).catch(err => console.log(err))
+}
+
 module.exports = {
     createPlaylist,
     getPlaylists,
     getPlaylistPairs,
-    getPlaylistById
+    getPlaylistById,
+    deletePlaylistById,
+    createSong,
 }

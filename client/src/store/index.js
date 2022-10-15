@@ -116,7 +116,7 @@ export const useGlobalStore = () => {
         async function asyncChangeListName(id) {
             let response = await api.getPlaylistById(id);
             if (response.data.success) {
-                let playlist = response.data.playist;
+                let playlist = response.data.playlist;
                 playlist.name = newName;
                 async function updateList(playlist) {
                     response = await api.updatePlaylistById(playlist._id, playlist);
@@ -206,10 +206,35 @@ export const useGlobalStore = () => {
 
     store.createNewList = function () {
         async function asyncCreateNewList() {
-            await api.createPlayList();
-            store.loadIdNamePairs();
+            let response = await api.createPlayList();
+            if (response.data.success) { 
+                let playlist = response.data.playlist;
+                storeReducer({
+                    type: GlobalStoreActionType.CREATE_NEW_LIST,
+                    payload: playlist
+                });
+                store.history.push("/playlist/" + playlist._id);
+            }
         }
         asyncCreateNewList();
+    }
+
+    store.deleteList = function (id) {
+        async function asyncDeletePlaylist(id) {
+            storeReducer({
+                type: GlobalStoreActionType.MARK_LIST_FOR_DELETION,
+                payload: {}
+            });
+
+            let response = await api.deletePlaylistById(id);
+
+            if (response.data.success) {
+                store.loadIdNamePairs();
+            } else {               
+                console.log("Failed to delete playlist")
+            }
+        }
+        asyncDeletePlaylist(id);
     }
 
     // THIS GIVES OUR STORE AND ITS REDUCER TO ANY COMPONENT THAT NEEDS IT

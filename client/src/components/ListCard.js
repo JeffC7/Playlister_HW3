@@ -13,7 +13,7 @@ function ListCard(props) {
     const [ editActive, setEditActive ] = useState(false);
     const [ text, setText ] = useState("");
     store.history = useHistory();
-    const { idNamePair, selected } = props;
+    const { idNamePair, selected, setName, setId, showDeleteListModal} = props;
 
     function handleLoadList(event) {
         if (!event.target.disabled) {
@@ -50,10 +50,14 @@ function ListCard(props) {
         setText(event.target.value );
     }
 
-    // function handleDeleteList(event) {
-    //     event.stopPropagation();
+    function handleDeleteList(event) {
+        event.stopPropagation();
+        setName(idNamePair.name);
+        setId(idNamePair._id);
+        // console.log(idNamePair._id);
+        showDeleteListModal();
 
-    // }
+    }
 
     let selectClass = "unselected-list-card";
     if (selected) {
@@ -80,7 +84,7 @@ function ListCard(props) {
                 type="button"
                 id={"delete-list-" + idNamePair._id}
                 className="list-card-button"
-                // onClick={handleDeleteList}
+                onClick={handleDeleteList}
                 value={"\u2715"}
             />
             <input

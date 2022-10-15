@@ -35,6 +35,7 @@ function EditToolbar() {
                 disabled={editStatus}
                 value="+"
                 className={enabledButtonClass}
+                // onClick={}
             />
             <input
                 type="button"

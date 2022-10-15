@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import ListCard from './ListCard.js'
 import { GlobalStoreContext } from '../store'
@@ -10,23 +10,26 @@ import DeleteListModal from './DeleteListModal.js'
     @author McKilla Gorilla
 */
 const ListSelector = () => {
-    // this.state = {
-    //     listKeyPairMarkedForDeletion : null,
-    //     currentList : null,
-    //     editIndex: null,
-    //     deleteIndex: null,
-    // }
-
-    // function deleteMarkedList() {
-    //     this.deleteList(this.state.listKeyPairMarkedForDeletion.key);
-    //     this.hideDeleteListModal();
-    // }
     
-    // // THIS FUNCTION IS FOR HIDING THE MODAL
-    // function hideDeleteListModal() {
-    //     let modal = document.getElementById("delete-list-modal");
-    //     modal.classList.remove("is-visible");
-    // }
+    const [name, setName] = useState("");
+    const [id, setId] = useState("");
+
+    // Function for showing the modal
+    function showDeleteListModal (){
+        let modal = document.getElementById("delete-list-modal");
+        modal.classList.add("is-visible");
+    }
+
+    function deleteMarkedList() {
+        store.deleteList(id);
+        hideDeleteListModal();
+    }
+    
+    // THIS FUNCTION IS FOR HIDING THE MODAL
+    function hideDeleteListModal() {
+        let modal = document.getElementById("delete-list-modal");
+        modal.classList.remove("is-visible");
+    }
 
     const { store } = useContext(GlobalStoreContext);
     store.history = useHistory();
@@ -51,6 +54,10 @@ const ListSelector = () => {
                     key={pair._id}
                     idNamePair={pair}
                     selected={false}
+                    setName={setName}
+                    setId={setId}
+                    showDeleteListModal={showDeleteListModal}
+
                 />
             // </>
         ))
@@ -70,6 +77,11 @@ const ListSelector = () => {
                     listCard
                 }
             </div>
+            <DeleteListModal
+                propName={name}
+                hideDeleteListModalCallback={hideDeleteListModal}
+                deleteListCallback={deleteMarkedList}
+            />
         </div>)
 }
 

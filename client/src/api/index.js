@@ -24,6 +24,7 @@ const api = axios.create({
 export const getAllPlaylists = () => api.get(`/playlists`)
 export const getPlaylistPairs = () => api.get('playlistpairs')
 export const getPlaylistById = (id) => api.get(`/playlist/${id}`)
+export const deletePlaylistById = (id) => api.delete(`/deletePlaylist/${id}`)
 
 export const createPlayList = () =>
   api.post("/playlist", {
@@ -36,7 +37,7 @@ const apis = {
     getPlaylistPairs,
     getPlaylistById,
     createPlayList,
-
+    deletePlaylistById
 }
 
 export default apis
