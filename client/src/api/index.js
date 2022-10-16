@@ -25,6 +25,7 @@ export const getAllPlaylists = () => api.get(`/playlists`)
 export const getPlaylistPairs = () => api.get('playlistpairs')
 export const getPlaylistById = (id) => api.get(`/playlist/${id}`)
 export const deletePlaylistById = (id) => api.delete(`/deletePlaylist/${id}`)
+export const putPlaylistById = (id, playlist) => api.put(`/putPlaylistById/${id}`, playlist)
 
 export const createSong = (id) => api.post(`/createSong/${id}`)
 export const removeSong = (id) => api.delete(`/removeSong/${id}`)
@@ -47,7 +48,9 @@ export const addDeleteSong = (id, index, song) =>
       youTubeId: song.youTubeId
     }
   )
-  
+
+export const moveSong = (id, req) => api.put(`/moveSong/${id}`, req)
+
 export const createPlayList = () =>
   api.post("/playlist", {
     name: "Untitled",
@@ -60,11 +63,13 @@ const apis = {
     getPlaylistById,
     createPlayList,
     deletePlaylistById,
+    putPlaylistById,
     createSong,
     removeSong,
     editSong,
     deleteSong,
     addDeleteSong,
+    moveSong,
 }
 
 export default apis

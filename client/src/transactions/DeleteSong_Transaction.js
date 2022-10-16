@@ -9,12 +9,10 @@ export default class DeleteSong_Transaction extends jsTPS_Transaction {
     }
 
     doTransaction() {
-        console.log("do" + this.index);
         this.store.deleteSong(this.index);
     }
     
     undoTransaction() {
-        console.log("undo" + this.index);
         this.store.addDeleteSong(this.index, this.song);
     }
 }

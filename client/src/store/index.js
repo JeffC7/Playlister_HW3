@@ -4,6 +4,7 @@ import api from '../api'
 import AddSong_Transaction from '../transactions/AddSong_Transaction.js';
 import EditSong_Transaction from '../transactions/EditSong_Transaction.js';
 import DeleteSong_Transaction from '../transactions/DeleteSong_Transaction.js';
+import MoveSong_Transaction from '../transactions/MoveSong_Transaction';
 
 export const GlobalStoreContext = createContext({});
 /*
@@ -123,7 +124,7 @@ export const useGlobalStore = () => {
                 let playlist = response.data.playlist;
                 playlist.name = newName;
                 async function updateList(playlist) {
-                    response = await api.updatePlaylistById(playlist._id, playlist);
+                    response = await api.putPlaylistById(playlist._id, playlist);
                     if (response.data.success) {
                         async function getListPairs(playlist) {
                             response = await api.getPlaylistPairs();
@@ -255,7 +256,7 @@ export const useGlobalStore = () => {
                     type: GlobalStoreActionType.SET_CURRENT_LIST,
                     payload: playlist
                 });
-                store.history.push("/playlist/" + playlist._id);
+                // store.history.push("/playlist/" + playlist._id);
             }
         }
         asyncCreateSong(store.currentList._id);
@@ -270,7 +271,7 @@ export const useGlobalStore = () => {
                     type: GlobalStoreActionType.SET_CURRENT_LIST,
                     payload: playlist
                 });
-                store.history.push("/playlist/" + playlist._id);
+                // store.history.push("/playlist/" + playlist._id);
             }
         }
         asyncRemoveSong(store.currentList._id);
@@ -291,7 +292,7 @@ export const useGlobalStore = () => {
                     type: GlobalStoreActionType.SET_CURRENT_LIST,
                     payload: playlist
                 });
-                store.history.push("/playlist/" + playlist._id);
+                // store.history.push("/playlist/" + playlist._id);
             }
         }
         asyncEditSong(store.currentList._id, index, song);
@@ -304,7 +305,6 @@ export const useGlobalStore = () => {
 
     store.deleteSong = function (index) {
         async function asyncDeleteSong(id, index) {
-            console.log("stored" + index);
             let response = await api.deleteSong(id, index);
             if (response.data.success) { 
                 let playlist = response.data.playlist;
@@ -312,7 +312,7 @@ export const useGlobalStore = () => {
                     type: GlobalStoreActionType.SET_CURRENT_LIST,
                     payload: playlist
                 });
-                store.history.push("/playlist/" + playlist._id);
+                // store.history.push("/playlist/" + playlist._id);
             }
         }
         asyncDeleteSong(store.currentList._id, index);
@@ -320,7 +320,7 @@ export const useGlobalStore = () => {
 
     store.addDeleteSong = function (index, song) {
         async function asyncAddDeleteSong(id, index, song) {
-            console.log("storea" + index);
+            // console.log("storea" + index);
             let response = await api.addDeleteSong(id, index, song);
             if (response.data.success) { 
                 let playlist = response.data.playlist;
@@ -328,12 +328,30 @@ export const useGlobalStore = () => {
                     type: GlobalStoreActionType.SET_CURRENT_LIST,
                     payload: playlist
                 });
-                store.history.push("/playlist/" + playlist._id);
+                // store.history.push("/playlist/" + playlist._id);
             }
         }
         asyncAddDeleteSong(store.currentList._id, index, song);
     }
 
+    store.moveSongTransaction = (startIndex, endIndex) => {
+        let transaction = new MoveSong_Transaction(store, startIndex, endIndex);
+        tps.addTransaction(transaction);
+    }
+
+    store.moveSong = (start, end) => {
+        async function asyncMoveSong(start, end) {
+            let req = {start: start, end: end};
+            let response = await api.moveSong(store.currentList._id , req);
+            if (response.data.success) {
+                storeReducer({ 
+                    type: GlobalStoreActionType.SET_CURRENT_LIST, 
+                    payload: response.data.playlist
+                }) 
+            }
+        }
+        asyncMoveSong(start, end)
+    }
 
     // THIS GIVES OUR STORE AND ITS REDUCER TO ANY COMPONENT THAT NEEDS IT
     return { store, storeReducer };

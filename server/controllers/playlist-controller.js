@@ -8,7 +8,7 @@ const Playlist = require('../models/playlist-model')
 */
 createPlaylist = (req, res) => {
     const body = req.body;
-    console.log("createPlaylist body: " + body);
+    // console.log("createPlaylist body: " + body);
 
     if (!body) {
         return res.status(400).json({
@@ -97,6 +97,17 @@ deletePlaylistById = async (req, res) => {
     }).catch(err => console.log(err))
 }
 
+putPlaylistById = async (req, res) => {
+    const name = req.body.name;
+    await Playlist.findByIdAndUpdate({ _id: req.params.id }, {name}, (err, list) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+
+        return res.status(200).json({ success: true})
+    }).catch(err => console.log(err))
+}
+
 createSong = async (req, res) => {
     await Playlist.findOne({ _id: req.params.id }, (err, list) => {
         if (err) {
@@ -149,7 +160,7 @@ removeSong = async (req, res) => {
 
 editSong = async (req, res) => {
     const body = req.body;
-    // console.log("editSong body: " + JSON.stringify(body));
+    //console.log("editSong body: " + JSON.stringify(body));
     await Playlist.findOne({ _id: req.params.id }, (err, list) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
@@ -212,7 +223,7 @@ deleteSong = async (req, res) => {
 
 addDeleteSong = async (req, res) => {
     const body = req.body;
-    console.log("addDeleteSong body: " + JSON.stringify(body));
+    // console.log("addDeleteSong body: " + JSON.stringify(body));
     await Playlist.findOne({ _id: req.params.id }, (err, list) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
@@ -248,15 +259,73 @@ addDeleteSong = async (req, res) => {
     }).catch(err => console.log(err))
 }
 
+moveSong = async (req, res) => {
+    let body = req.body.start;
+    let body2 = req.body.end;
+    await Playlist.findOne({ _id: req.params.id }, (err, list) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+
+        if (!body) {
+            return res.status(400).json({
+                success: false,
+                error: 'You must provide a song to move',
+            })
+        }
+        let start = body;
+        let end = body2;
+
+        // start -= 1;
+        // end -= 1;
+        // console.log(start)
+        // console.log(end)
+        if (start < end) {
+            let temp = list.songs[start];
+            for (let i = start; i < end; i++) {
+                list.songs[i] = list.songs[i + 1];
+            }
+            list.songs[end] = temp;
+        }
+        else if (start > end) {
+            let temp = list.songs[start];
+            for (let i = start; i > end; i--) {
+                list.songs[i] = list.songs[i - 1];
+            }
+            list.songs[end] = temp;
+        }
+        
+        list.markModified("songs");
+        list
+            .save()
+            .then(() => {
+                return res.status(201).json({
+                    success: true,
+                    playlist: list,
+                    message: 'Move Song Successful!',
+                })
+            })
+            .catch(error => {
+                return res.status(400).json({
+                    error,
+                    message: 'Move Song Unsuccessful!',
+                })
+            })
+    }).catch(err => console.log(err))
+}
+
 module.exports = {
     createPlaylist,
     getPlaylists,
     getPlaylistPairs,
     getPlaylistById,
     deletePlaylistById,
+    putPlaylistById,
     createSong,
     removeSong,
     editSong,
     deleteSong,
-    addDeleteSong
+    addDeleteSong,
+    moveSong,
+
 }

@@ -34,7 +34,7 @@ function ListCard(props) {
     function toggleEdit() {
         let newActive = !editActive;
         if (newActive) {
-            store.setIsListNameEditActive();
+            store.setlistNameActive();
         }
         setEditActive(newActive);
     }
@@ -57,6 +57,14 @@ function ListCard(props) {
         // console.log(idNamePair._id);
         showDeleteListModal();
 
+    }
+
+    function handleBlur(event) {
+        // event.stopPropagation();
+        // let key = this.props.keyNamePair.key;
+        // let textValue = this.state.text;
+        // this.props.renameListCallback(key, textValue);
+        // handleToggleEdit();
     }
 
     let selectClass = "unselected-list-card";
@@ -105,6 +113,7 @@ function ListCard(props) {
                 type='text'
                 onKeyPress={handleKeyPress}
                 onChange={handleUpdateText}
+                onBlue={handleBlur}
                 defaultValue={idNamePair.name}
             />;
     }
