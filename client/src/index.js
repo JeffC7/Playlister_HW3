@@ -10,13 +10,28 @@ import reportWebVitals from './reportWebVitals';
 */
 import { GlobalStoreContext, useGlobalStore } from './store'
 const AppWrapper = () => {
-  const store = useGlobalStore();
+  const entireStore = useGlobalStore();
+  const store = entireStore.store;
+
+  const handleOnKeyDown = (event) => {
+    if (event.ctrlKey) {
+        if (event.key === 'z') {
+            store.undo();
+        } else if (event.key ===  'y') {
+            store.redo();
+        }
+    }
+  }
   return (
-    <GlobalStoreContext.Provider value={store}>
-      <App />
+    <GlobalStoreContext.Provider value={entireStore}>
+      <div id="root" onKeyDown={handleOnKeyDown}>
+        <App />
+      </div>
     </GlobalStoreContext.Provider>
   )
 }
+
+
 ReactDOM.render(
   <React.StrictMode>
     <AppWrapper />
