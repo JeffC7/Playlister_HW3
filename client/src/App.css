@@ -63,11 +63,16 @@ body {
 }
 
 #playlist-selector, #playlist-cards {
+  max-height: 80%;
   overflow: scroll;
   grid-column: 1 / 3;
   grid-row: 2 / 3;
   display:grid;
   background-color: var(--swatch-primary);
+}
+
+#playlist-selector-heading {
+  font-size: 45px;
 }
 
 .playlister-button, .playlister-button-disabled {

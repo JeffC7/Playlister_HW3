@@ -41,6 +41,15 @@ const ListSelector = () => {
     function handleCreateNewList() {
         store.createNewList();
     }
+
+    let canAddList = true;
+    let canAddListClass = "playlister-button ";
+    let deleteListModal = document.getElementById("delete-list-modal");
+    if (deleteListModal && deleteListModal.classList.contains("is-visible")) {
+        canAddList = false;
+        canAddListClass += "disabled"
+    }
+
     let listCard = "";
     if (store) {
         listCard = store.idNamePairs.map((pair) => (
@@ -70,7 +79,8 @@ const ListSelector = () => {
                     type="button"
                     id="add-list-button"
                     onClick={handleCreateNewList}
-                    className="playlister-button"
+                    disabled={!canAddList}
+                    className={canAddListClass}
                     value="+" />
                 Your Lists
             </div>                {

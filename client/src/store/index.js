@@ -353,6 +353,7 @@ export const useGlobalStore = () => {
         asyncMoveSong(start, end)
     }
 
+    store.getTPS = () => {return tps;}
     // THIS GIVES OUR STORE AND ITS REDUCER TO ANY COMPONENT THAT NEEDS IT
     return { store, storeReducer };
 }
