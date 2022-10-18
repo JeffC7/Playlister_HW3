@@ -24,6 +24,7 @@ function EditToolbar() {
     function handleClose() {
         history.push("/");
         store.closeCurrentList();
+        (store.getTPS()).clearAllTransactions();
     }
 
     let editModal = document.getElementById("edit-song-modal");

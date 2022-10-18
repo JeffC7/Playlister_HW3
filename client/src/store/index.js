@@ -238,6 +238,7 @@ export const useGlobalStore = () => {
             } else {               
                 console.log("Failed to delete playlist")
             }
+            console.log("delete is here")
         }
         asyncDeletePlaylist(id);
     }
