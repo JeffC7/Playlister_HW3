@@ -8,8 +8,8 @@ import EditToolbar from "./EditToolbar";
 */
 function Banner(props) {
     return (        
-        <div id="playlister-banner">
-            Playlister
+        <div id="playlister-banner" style={{display: "flex", justifyContent: "space-between"}}>
+            <div>Playlister</div>
             <EditToolbar />
         </div>
     );

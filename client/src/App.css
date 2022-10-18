@@ -58,9 +58,11 @@ body {
 
 #edit-toolbar {
   grid-column: 2 / 3;
-  grid-row: 1 / 2;
-  background-color: transparent;
-  float:right;
+  grid-row: 2 / 3;
+  display: flex;
+  flex-direction: row;
+  overflow: auto;
+  background-color: var(--swatch-primary);
 }
 
 #playlist-selector, #playlist-cards {
@@ -83,6 +85,8 @@ body {
   color: black;
   cursor: pointer;
   opacity: 100%;
+  border: 1px solid black;
+  margin-left: 0.2px;
 }
 
 .playlister-button:hover {
